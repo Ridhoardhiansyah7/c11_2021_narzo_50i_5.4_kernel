@@ -89,7 +89,7 @@
 #define headset_reg_set_bits(reg, bits) \
 	sci_adi_set(CODEC_REG((reg)), (bits))
 
-extern void tp_headset_status_switch(int status);
+//extern void tp_headset_status_switch(int status);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -1773,7 +1773,7 @@ static void headset_detect_all_work_func(struct work_struct *work)
 		case HEADSET_4POLE_NORMAL:
 			pr_info("headset_type = %d (HEADSET_4POLE_NORMAL)\n",
 				headset_type);
-			tp_headset_status_switch(1);
+			//tp_headset_status_switch(1);
 			if (pdata->gpio_switch != 0)
 				gpio_direction_output(pdata->gpio_switch, 0);
 			break;
@@ -1873,7 +1873,7 @@ static void headset_detect_all_work_func(struct work_struct *work)
 
 		/*delay 10ms*/
 		sprd_msleep(10);
-		tp_headset_status_switch(0);
+		//tp_headset_status_switch(0);
 		/* bit10-8 change from 001 to 110 */
 		msk = HEDET_LDET_REFL_SEL_MASK << HEDET_LDET_REFL_SEL;
 		val = HEDET_LDET_REFL_SEL_300MV << HEDET_LDET_REFL_SEL;
