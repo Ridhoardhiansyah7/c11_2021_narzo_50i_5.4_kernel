@@ -428,7 +428,7 @@ static int musb_sprd_vbus_notifier(struct notifier_block *nb,
 		dev_info(glue->dev,
 			"device connection detected from VBUS GPIO.\n");
 		printk("device connection detected from VBUS GPIO.\n");
-		tp_charge_status_switch(1);
+		//tp_charge_status_switch(1);
 	} else {
 		spin_lock_irqsave(&glue->lock, flags);
 		if (glue->vbus_active == 0 || glue->dr_mode == USB_DR_MODE_HOST) {
@@ -450,7 +450,7 @@ static int musb_sprd_vbus_notifier(struct notifier_block *nb,
 		dev_info(glue->dev,
 			"device disconnect detected from VBUS GPIO.\n");
 		printk("device disconnect detected from VBUS GPIO.\n");
-		tp_charge_status_switch(0);
+		//tp_charge_status_switch(0);
 	}
 
 	return 0;
