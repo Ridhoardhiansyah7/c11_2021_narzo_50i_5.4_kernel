@@ -793,9 +793,16 @@ static int sprd_pin_set(struct platform_device *pdev)
     struct pinctrl_state *pinctrl_state0 = NULL;
     char *s0 = "eic_dbc2";
     int ret0;
+	
     p = devm_pinctrl_get(&pdev->dev);
+	if (IS_ERR(p))
+		return 0;
+	
     /*set function to eic*/
     pinctrl_state0 = pinctrl_lookup_state(p, s0);
+	if (IS_ERR(pinctrl_state0))
+		return 0;
+	
     ret0 =  pinctrl_select_state(p, pinctrl_state0);
     return 0;
 }
