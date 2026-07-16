@@ -77,6 +77,8 @@
 #define FAN54015_DISABLE_PIN_MASK_2720			BIT(0)
 #define FAN54015_WAKE_UP_MS                             2000
 
+extern int sc27xx_fgu_bat_id;
+
 struct fan54015_charge_current {
 	int sdp_limit;
 	int sdp_cur;
@@ -233,8 +235,12 @@ static int fan54015_charger_hw_init(struct fan54015_charger_info *info)
 	struct sprd_battery_info bat_info = {};
 	int voltage_max_microvolt;
 	int ret;
+	int num = 0;
 
-	ret = sprd_battery_get_battery_info(info->psy_usb, &bat_info);
+	if (sc27xx_fgu_bat_id == 2)
+		num = 1;
+
+	ret = sprd_battery_get_battery_info(info->psy_usb, &bat_info, num);
 	if (ret) {
 		dev_warn(info->dev, "no battery information is supplied\n");
 
