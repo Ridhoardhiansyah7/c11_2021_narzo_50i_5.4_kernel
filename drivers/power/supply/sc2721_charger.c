@@ -54,7 +54,6 @@
 
 #define SC2721_WAKE_UP_MS				2000
 
-extern int sc27xx_fgu_bat_id;
 
 struct sc2721_charge_current {
 	int sdp_cur;
@@ -240,13 +239,8 @@ static int sc2721_charger_hw_init(struct sc2721_charger_info *info)
 	struct power_supply_battery_info bat_info = { };
 	u32 voltage_max_microvolt;
 	int ret;
-	int num = 0;
-
-
-	if (sc27xx_fgu_bat_id == 2)
-		num = 1;
-
-	ret = sc2721_get_battery_cur(info->psy_usb, &info->cur, num);
+	
+	ret = sc2721_get_battery_cur(info->psy_usb, &info->cur);
 	if (ret) {
 		dev_warn(info->dev, "no battery current information is supplied\n");
 
