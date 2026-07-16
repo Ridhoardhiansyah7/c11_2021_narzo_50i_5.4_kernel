@@ -1939,6 +1939,9 @@ bq2560x_charger_register_vbus_regulator(struct bq2560x_charger_info *info)
 static int bq2560x_charger_probe(struct i2c_client *client,
 		const struct i2c_device_id *id)
 {
+
+	pr_err("=== DEBUG_BQ2560X: DRIVER PROBE! ===\n");
+
 	struct i2c_adapter *adapter = to_i2c_adapter(client->dev.parent);
 	struct device *dev = &client->dev;
 	struct power_supply_config charger_cfg = { };
