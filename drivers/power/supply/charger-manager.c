@@ -6659,6 +6659,30 @@ static int charger_regualtors_data_init(struct charger_desc *desc, struct device
 					&cables->max_uA);
 
 					ret = charger_extcon_data_init(cables, _child);
+					
+					if (cables->name && strcmp(cables->name, "USB") == 0) {
+						struct extcon_device *forced_edev = NULL;
+
+						forced_edev = extcon_get_extcon_dev("sc27xx-typec");
+						
+						if (IS_ERR_OR_NULL(forced_edev))
+							forced_edev = extcon_get_extcon_dev("sc2721-typec");
+							
+						if (IS_ERR_OR_NULL(forced_edev))
+							forced_edev = extcon_get_extcon_dev("380.typec");
+							
+						if (IS_ERR_OR_NULL(forced_edev))
+							forced_edev = extcon_get_extcon_dev("sprd-typec");
+
+						if (!IS_ERR_OR_NULL(forced_edev)) {
+							pr_info("HACK: Overriding USB extcon from DTBO to PMIC Type-C\n");
+							cables->edev = forced_edev;
+							ret = 0;
+						} else {
+							pr_err("HACK: Failed to find PMIC Type-C driver instance\n");
+						}
+					}	
+
 					if (ret)
 						return ret;
 
