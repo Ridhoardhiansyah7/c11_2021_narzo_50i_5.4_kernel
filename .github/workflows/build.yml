@@ -238,19 +238,23 @@ jobs:
              
               echo "[INFO] Create dummy directory for prebuild ndk"
               mkdir -p "${{ github.workspace }}/prebuilts/ndk/platforms/android-29/arch-arm64/usr/include"
-             
+
+              echo "[INFO] Convert fatal error (*.mk) to  warning..."
+              find drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/ -name "*.mk" -exec sed -i 's/\$(error/\$(warning/g' {} +
+
               echo "[INFO] Create dummy script for prepare-llvm-android.sh..."
               mkdir -p drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/tools
               touch drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/tools/prepare-llvm-android.sh
               chmod +x drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/tools/prepare-llvm-android.sh
               
-              echo "[INFO] Turn off fatal error JAVA_HOME di extra_config.mk..."
+              echo "[INFO] Turn off fatal error JAVA_HOME in extra_config.mk..."
               CONFIG_MK="drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/common/android/extra_config.mk"
               if [ -f "$CONFIG_MK" ]; then
                  sed -i 's/$(error JAVA_HOME/$(warning JAVA_HOME/g' "$CONFIG_MK"
               fi
 
               MAKE_CMD="$MAKE_CMD \
+              ANDROID_ROOT=\"${{ github.workspace }}\" \
               TARGET_BOARD_PLATFORM=\"${{ env.TARGET_BOARD_PLATFORM }}\" \
               TARGET_BOARD=\"${{ env.TARGET_BOARD }}\" \
               TARGET_KERNEL_ARCH=\"${{ env.TARGET_KERNEL_ARCH }}\" \
