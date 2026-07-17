@@ -194,7 +194,7 @@ jobs:
           MODULE_LIST="
           sprd_sensor:drivers/modules/common/camera/sensor:NONE
           sprd_flash_drv:drivers/modules/common/camera/flash/flash_drv:NONE
-          flash_ic_ocp8135:drivers/modules/common/camera/flash/ocp8135b:NONE
+          flash_ic_ocp8135b:drivers/modules/common/camera/flash/ocp8135b:NONE
           sprd_camera:drivers/modules/common/camera/core:NONE
           sprd_cpp:drivers/modules/common/camera/cpp:NONE
           pvrsrvkm:drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/sharkl3_android:NONE
@@ -308,7 +308,7 @@ jobs:
           MODULE_LIST="
           sprd_sensor:drivers/modules/common/camera/sensor:NONE
           sprd_flash_drv:drivers/modules/common/camera/flash/flash_drv:NONE
-          flash_ic_ocp8135:drivers/modules/common/camera/flash/ocp8135b:NONE
+          flash_ic_ocp8135b:drivers/modules/common/camera/flash/ocp8135b:NONE
           sprd_camera:drivers/modules/common/camera/core:NONE
           sprd_cpp:drivers/modules/common/camera/cpp:NONE
           pvrsrvkm:drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/sharkl3_android:NONE
