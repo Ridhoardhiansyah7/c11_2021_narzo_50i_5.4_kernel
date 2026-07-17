@@ -199,7 +199,7 @@ jobs:
           sprd_cpp:drivers/modules/common/camera/cpp:NONE
           pvrsrvkm:drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/sharkl3_android:NONE
           chipone-tddi:drivers/modules/kernel5.4/input/touchscreen/chipone_tddi_k630:NONE
-          focaltech_ts:drivers/modules/kernel5.4/input/touchscreen/focaltech_ft8756_spi:NONE
+          focaltech_ft8756_spi_ts:drivers/modules/kernel5.4/input/touchscreen/focaltech_ft8756_spi:NONE
           sprd_fm:drivers/modules/kernel5.4/wcn/fm/driver:NONE
           sprdbt_tty:drivers/modules/kernel5.4/wcn/bluetooth/driver:NONE
           microarray_fp:drivers/modules/kernel5.4/input/fingerprint/microarray:NONE
@@ -313,7 +313,7 @@ jobs:
           sprd_cpp:drivers/modules/common/camera/cpp:NONE
           pvrsrvkm:drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/sharkl3_android:NONE
           chipone-tddi:drivers/modules/kernel5.4/input/touchscreen/chipone_tddi_k630:NONE
-          focaltech_ts:drivers/modules/kernel5.4/input/touchscreen/focaltech_ft8756_spi:NONE
+          focaltech_ft8756_spi_ts:drivers/modules/kernel5.4/input/touchscreen/focaltech_ft8756_spi:NONE
           sprd_fm:drivers/modules/kernel5.4/wcn/fm/driver:NONE
           sprdbt_tty:drivers/modules/kernel5.4/wcn/bluetooth/driver:NONE
           microarray_fp:drivers/modules/kernel5.4/input/fingerprint/microarray:NONE
