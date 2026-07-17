@@ -19,8 +19,10 @@ TARGET_KERNEL_ARCH := $(BSP_BOARD_ARCH)
 PRODUCT_OUT := $(BSP_ROOT_DIR)
 MALI_PLATFORM_NAME := sharkl3
 export PVRSRV_APPHINT_HWRDEBUGDUMPLIMIT := 4
-export HOST_CC := $(BSP_ROOT_DIR)/toolchain/prebuilts/clang/host/linux-x86/clang-r383902/bin/clang
-export HOST_CXX := $(BSP_ROOT_DIR)/toolchain/prebuilts/clang/host/linux-x86/clang-r383902/bin/clang++
+export HOST_CC := ccache clang
+export HOST_CXX := ccache clang++
+# export HOST_CC := $(BSP_ROOT_DIR)/toolchain/prebuilts/clang/host/linux-x86/clang-r383902/bin/clang
+# export HOST_CXX := $(BSP_ROOT_DIR)/toolchain/prebuilts/clang/host/linux-x86/clang-r383902/bin/clang++
 
 $(warning KO_MODULE_NAME: $(KO_MODULE_NAME))
 $(warning OUT: $(OUT))
