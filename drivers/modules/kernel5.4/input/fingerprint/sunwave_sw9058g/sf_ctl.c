@@ -1187,6 +1187,15 @@ static int sf_read_sensor_id(void)
 
 #endif
 
+#ifndef CONFIG_FB
+struct fb_info;
+int fb_blank(struct fb_info *info, int blank)
+{
+    return 0;
+}
+#endif
+
+
 ////////////////////////////////////////////////////////////////////////////////
 static int sf_ctl_init_irq(void)
 {
