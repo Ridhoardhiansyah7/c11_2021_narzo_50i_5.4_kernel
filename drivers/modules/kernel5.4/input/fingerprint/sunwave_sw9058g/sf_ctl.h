@@ -112,11 +112,7 @@ struct sf_ctl_device {
     int  (*power_on)  (bool on);
     int  (*spi_clk_on)(bool on);
     int  (*reset)     (void);
-#ifdef CONFIG_PM_WAKELOCKS
-    struct wakeup_source wakelock;
-#else
-    struct wake_lock wakelock;
-#endif
+    struct wakeup_source *wakelock;
 #ifdef CONFIG_HAS_EARLYSUSPEND
     struct early_suspend early_suspend;
 #elif defined(CONFIG_ADF_SPRD)
