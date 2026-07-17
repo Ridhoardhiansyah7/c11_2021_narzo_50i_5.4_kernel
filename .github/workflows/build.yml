@@ -237,7 +237,7 @@ jobs:
              if [ "$KO_NAME" = "pvrsrvkm" ]; then
              
               echo "[INFO] Create dummy directory for prebuild ndk"
-              mkdir -p "${{ github.workspace }}/prebuilts/ndk/platforms/android-29/arch-arm64/usr/include"
+              mkdir -p "${{ github.workspace }}/prebuilts/ndk/platforms/android-31/arch-arm64/usr/include"
 
               echo "[INFO] Convert fatal error (*.mk) to  warning..."
               find drivers/modules/kernel5.4/gpu/rogue/driver/build/linux/ -name "*.mk" -exec sed -i 's/\$(error/\$(warning/g' {} +
@@ -266,7 +266,8 @@ jobs:
               BSP_OUT_PLATFORM=\"${{ env.BSP_OUT_PLATFORM }}\" \
               BSP_KERNEL_OUT=\"${{ env.BSP_KERNEL_OUT }}\" \
               BSP_KERNEL_CROSS_COMPILE=\"${{ env.CROSS_COMPILE }}\" \
-               KCFLAGS=\"-Wno-error=cast-function-type -Wno-error=enum-conversion -Wno-error=missing-field-initializers\""
+              KCFLAGS=\"-Wno-unknown-warning-option -Wno-cast-function-type -Wno-error=enum-conversion -Wno-error=missing-field-initializers\" \
+              EXTRA_CFLAGS=\"-Wno-unknown-warning-option -Wno-cast-function-type\""
               fi
 
               if [ -n "$KBUILD_EXTRA_SYMBOLS" ]; then
