@@ -10,6 +10,7 @@
 #include <linux/highmem.h>
 #include <linux/module.h>
 #include <linux/of.h>
+#include <linux/gpio.h>
 #include <linux/of_device.h>
 #include <linux/of_gpio.h>
 #include <linux/pinctrl/consumer.h>
@@ -875,6 +876,16 @@ static u32 sdhci_sprd_int_status(struct sdhci_host *host, u32 intmask)
 	return intmask;
 }
 
+static int sdhci_sprd_my_get_sd_card(struct sdhci_host *host)
+{
+    int val = gpio_get_value(201);
+	printk("[DEBUG] SD Card Detect Status: %d\n", val);
+	
+	// 0 = sdcard is available
+	// 1 = sdcard is not available
+    return (val == 0) ? 1 : 0;
+}
+
 static struct sdhci_ops sdhci_sprd_ops = {
 	.read_l = sdhci_sprd_readl,
 	.write_l = sdhci_sprd_writel,
@@ -894,6 +905,7 @@ static struct sdhci_ops sdhci_sprd_ops = {
 	.dump_vendor_regs = sdhci_sprd_dumpregs,
 #endif
 	.irq = sdhci_sprd_int_status,
+	.get_cd = sdhci_sprd_my_get_sd_card,
 };
 
 static void sdhci_sprd_check_auto_cmd23(struct mmc_host *mmc,
@@ -1170,6 +1182,13 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
 		if (IS_ERR(sprd_host->pins_default)) {
 			ret = PTR_ERR(sprd_host->pins_default);
 			goto pltfm_free;
+		}
+	}
+
+	// add for sdcard
+	if (gpio_is_valid(201)) {
+		if (gpio_request(201, "sdcard_cd") == 0) {
+			gpio_direction_input(201);
 		}
 	}
 
