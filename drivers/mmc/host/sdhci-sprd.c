@@ -879,9 +879,7 @@ static u32 sdhci_sprd_int_status(struct sdhci_host *host, u32 intmask)
 
 static int sdhci_sprd_my_get_sd_card(struct mmc_host *mmc)
 {
-    struct sdhci_host *host = mmc_priv(mmc);
     int val = gpio_get_value(201);
-    
     printk("[DEBUG] SD Card Detect Status: %d\n", val);
 
 	// 1 sdcard npt found
