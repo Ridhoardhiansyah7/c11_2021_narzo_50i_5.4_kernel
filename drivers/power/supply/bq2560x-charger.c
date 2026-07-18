@@ -1948,6 +1948,8 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 	int ret;
 	bool bat_present;
 
+	printk(KERN_ERR "BQ2560X: Start probe...\n");
+
 	if (!adapter) {
 		pr_err("%s:line%d: NULL pointer!!!\n", __func__, __LINE__);
 		return -EINVAL;
@@ -1970,26 +1972,30 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 
 	info->usb_phy = devm_usb_get_phy_by_phandle(dev, "phys", 0);
 	if (IS_ERR(info->usb_phy)) {
-		dev_err(dev, "failed to find USB phy\n");
-		return -EPROBE_DEFER;
+		dev_err(dev, "failed to find USB phy, forcing null\n");
+		//return -EPROBE_DEFER;
+		info->usb_phy = NULL;
 	}
 
 	ret = bq2560x_charger_register_pd_extcon(info->dev, info);
 	if (ret) {
 		dev_err(info->dev, "failed to register pd extcon\n");
-		return -EPROBE_DEFER;
+		//return -EPROBE_DEFER;
+		ret = 0;
 	}
 
 	ret = bq2560x_charger_register_typec_extcon(info->dev, info);
 	if (ret) {
 		dev_err(info->dev, "failed to register typec extcon\n");
-		return -EPROBE_DEFER;
+		//return -EPROBE_DEFER;
+		ret = 0;
 	}
 
 	ret = bq2560x_charger_is_fgu_present(info);
 	if (ret) {
 		dev_err(dev, "sc27xx_fgu not ready.\n");
-		return -EPROBE_DEFER;
+		//return -EPROBE_DEFER;
+		ret = 0;
 	}
 
 	ret = device_property_read_bool(dev, "role-slave");
@@ -2100,12 +2106,16 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 	INIT_DELAYED_WORK(&info->cur_work, bq2560x_current_work);
 
 	info->usb_notify.notifier_call = bq2560x_charger_usb_change;
-	ret = usb_register_notifier(info->usb_phy, &info->usb_notify);
-	if (ret) {
-		dev_err(dev, "failed to register notifier:%d\n", ret);
-		goto err_psy_usb;
+	if (info->usb_phy) {
+		ret = usb_register_notifier(info->usb_phy, &info->usb_notify);
+		if (ret) { 
+			dev_err(dev, "failed to register notifier:%d\n", ret);
+			goto err_psy_usb;
+		}
+	} else {
+		dev_info(dev, "USB PHY is NULL, skipping notifier\n");
 	}
-
+	
 	ret = bq2560x_register_sysfs(info);
 	if (ret) {
 		dev_err(info->dev, "register sysfs fail, ret = %d\n", ret);
@@ -2147,7 +2157,9 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 
 error_sysfs:
 	sysfs_remove_group(&info->psy_usb->dev.kobj, &info->sysfs->attr_g);
-	usb_unregister_notifier(info->usb_phy, &info->usb_notify);
+	if (info->usb_phy) {
+		usb_unregister_notifier(info->usb_phy, &info->usb_notify);
+	}
 err_psy_usb:
 	if (info->irq_gpio)
 		gpio_free(info->irq_gpio);
