@@ -1396,9 +1396,11 @@ static int hw_info_parse_dt(struct device_node *np)
 	int nicky_gpio = -1;
 	if (np) {
 		gpio_sdcard = of_get_named_gpio(np, "sdcard-gpio", 0);
-		if (gpio_sdcard < 0) {
-			printk("[HWINFO] sdcard-gpio not available (gpio_sdcard = %d)\n", gpio_sdcard);
-			return gpio_sdcard;
+		if (!gpio_is_valid(gpio_sdcard)) {
+			printk("[HWINFO] failed to read sdcard-gpio from DT (error code: %d). force fallback to GPIO 9\n", gpio_sdcard);
+			gpio_sdcard = 9;
+		} else {
+			printk("[HWINFO] successfully read GPIO from DT: %d\n", gpio_sdcard);
 		}
 		sdcard_gpio_value = gpio_sdcard;
 		printk("[HWINFO](gpio_sdcard = %d)\n", gpio_sdcard);
