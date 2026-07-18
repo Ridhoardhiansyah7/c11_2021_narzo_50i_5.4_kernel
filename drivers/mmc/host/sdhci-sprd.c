@@ -9,6 +9,7 @@
 #include <linux/dma-mapping.h>
 #include <linux/highmem.h>
 #include <linux/module.h>
+#include <linux/mmc/host.h>
 #include <linux/of.h>
 #include <linux/gpio.h>
 #include <linux/of_device.h>
@@ -876,13 +877,15 @@ static u32 sdhci_sprd_int_status(struct sdhci_host *host, u32 intmask)
 	return intmask;
 }
 
-static int sdhci_sprd_my_get_sd_card(struct sdhci_host *host)
+static int sdhci_sprd_my_get_sd_card(struct mmc_host *mmc)
 {
+    struct sdhci_host *host = mmc_priv(mmc);
     int val = gpio_get_value(201);
-	printk("[DEBUG] SD Card Detect Status: %d\n", val);
-	
-	// 0 = sdcard is available
-	// 1 = sdcard is not available
+    
+    printk("[DEBUG] SD Card Detect Status: %d\n", val);
+
+	// 1 sdcard npt found
+	// 0 sdcard found
     return (val == 0) ? 1 : 0;
 }
 
@@ -905,7 +908,6 @@ static struct sdhci_ops sdhci_sprd_ops = {
 	.dump_vendor_regs = sdhci_sprd_dumpregs,
 #endif
 	.irq = sdhci_sprd_int_status,
-	.get_cd = sdhci_sprd_my_get_sd_card,
 };
 
 static void sdhci_sprd_check_auto_cmd23(struct mmc_host *mmc,
@@ -1135,10 +1137,11 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
 	int ret = 0;
 
 	host = sdhci_pltfm_init(pdev, &sdhci_sprd_pdata, sizeof(*sprd_host));
+	host->mmc_host_ops.get_cd = sdhci_sprd_my_get_sd_card;
 	if (IS_ERR(host))
 		return PTR_ERR(host);
 
-	host->dma_mask = DMA_BIT_MASK(64);
+	host->dma_mask = DMA_BIT_MASK(32);
 	pdev->dev.dma_mask = &host->dma_mask;
 	host->mmc_host_ops.request = sdhci_sprd_request;
 	host->mmc_host_ops.hs400_enhanced_strobe =
@@ -1200,15 +1203,16 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
 		sprd_host->detect_gpio_polar = flags;
 	}
 	
-    sprd_host->vddcore_en = of_get_named_gpio(np, "vddcore-en", 0);
+    sprd_host->vddcore_en = of_get_named_gpio(np, "tf_ldo_en", 0);
     if (!gpio_is_valid(sprd_host->vddcore_en)){
         sprd_host->vddcore_en = -1;
-	}
-    ret = gpio_request(sprd_host->vddcore_en, "sd-vddcore");
-    if (ret) {
-        pr_err("Find vddcore gpio_%d\n", sprd_host->vddcore_en);
-        gpio_free(sprd_host->vddcore_en);
-        gpio_direction_output(sprd_host->vddcore_en, 0);
+	} else {
+		ret = gpio_request(sprd_host->vddcore_en, "sd-vddcore");
+		if (ret == 0) {
+			gpio_direction_output(sprd_host->vddcore_en, 1);
+		} else {
+			pr_err("Failed to request GPIO vddcore: %d\n", sprd_host->vddcore_en);
+		}
 	}
 
 	clk = devm_clk_get(&pdev->dev, "sdio");
