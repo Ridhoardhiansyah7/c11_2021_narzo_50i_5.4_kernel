@@ -4485,16 +4485,24 @@ static int sc27xx_fgu_probe(struct platform_device *pdev)
 	ret = device_property_read_u32(dev, "sprd,calib-resistance-micro-ohms",
 				       &data->calib_resist);
 	if (ret) {
-		dev_err(dev, "failed to get fgu calibration resistance\n");
-		return ret;
+		ret = device_property_read_u32(dev, "sprd,calib-resistance-real", &data->calib_resist);
+		if (ret) {
+			dev_warn(dev, "Properties not found, forcing default 10000\n");
+			data->calib_resist = 10000; // this value from sprd,calib-resistance-real c11 2021 dtbo node
+			ret = 0;
+		} else {
+			dev_info(dev, "Loaded calib-resistance-real: %u\n", data->calib_resist);
+		}
 	}
 
 	ret = device_property_read_u32(dev,
 				       "sprd,comp-resistance-mohm",
 				       &data->comp_resistance);
-	if (ret)
+	if (ret) {
 		dev_warn(dev, "no fgu compensated resistance support\n");
-
+		data->comp_resistance = 15; // this value from comp-resistance-mohm c11 2021 dtbo node
+	}
+		
 	data->slp_cap_calib.support_slp_calib =
 		device_property_read_bool(dev, "sprd,capacity-sleep-calibration");
 	if (!data->slp_cap_calib.support_slp_calib) {
