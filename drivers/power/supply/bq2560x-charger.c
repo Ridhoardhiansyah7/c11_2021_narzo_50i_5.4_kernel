@@ -373,7 +373,7 @@ static int bq2560x_charger_hw_init(struct bq2560x_charger_info *info)
 	int ret;
 	int num = 0;
 
-	if (sc27xx_fgu_bat_id == 2)
+	if (sc27xx_fgu_bat_id == 2 || sc27xx_fgu_bat_id == 3)
 		num = 1;
 
 	ret = sprd_battery_get_battery_info(info->psy_usb, &bat_info, num);
