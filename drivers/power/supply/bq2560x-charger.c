@@ -1101,6 +1101,7 @@ static int bq2560x_charger_register_typec_extcon(struct device *dev,
 			return ret;
 		}
 	}
+	
 
 	return 0;
 }
@@ -1249,7 +1250,8 @@ static int bq2560x_charger_usb_get_property(struct power_supply *psy,
 		break;
 
 	case POWER_SUPPLY_PROP_USB_TYPE:
-		type = info->usb_phy->chg_type;
+		val->intval = POWER_SUPPLY_USB_TYPE_DCP;
+		/*type = info->usb_phy->chg_type;
 
 		switch (type) {
 		case SDP_TYPE:
@@ -1267,6 +1269,7 @@ static int bq2560x_charger_usb_get_property(struct power_supply *psy,
 		default:
 			val->intval = POWER_SUPPLY_USB_TYPE_UNKNOWN;
 		}
+		*/
 
 		break;
 
