@@ -4274,7 +4274,7 @@ static int sc27xx_fgu_hw_init(struct sc27xx_fgu_data *data,
 
 	data->cur_now_buff[SC27XX_FGU_CURRENT_BUFF_CNT - 1] = SC27XX_FGU_MAGIC_NUMBER;
 
-	if (sc27xx_fgu_bat_id == 2)
+	if (sc27xx_fgu_bat_id == 2 || sc27xx_fgu_bat_id == 3)
 		num = 1;
 	ret = sprd_battery_get_battery_info(data->battery, &info, num);
 	if (ret) {
