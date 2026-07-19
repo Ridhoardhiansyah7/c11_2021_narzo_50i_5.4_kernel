@@ -1,0 +1,43 @@
+name: KSU Integration
+
+on:
+  workflow_dispatch:
+  
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: KernelSU
+        fetch-depth: 0
+
+    - name: Configure Git identity
+      run: |
+        git config --local user.name "Aflahal"
+        git config --local user.email "zxx97607@gmail.com"
+
+    - name: Run KernelSU Setup
+      run: |
+        rm -rf KernelSU
+        curl -LSs "https://raw.githubusercontent.com/backslashxx/KernelSU/master/kernel/setup.sh" | bash
+        
+        git rm -r --cached KernelSU || true
+        find KernelSU -name ".git" -exec rm -rf {} + || true
+
+    - name: Commit and Push
+      run: |
+        git add -A
+        
+        if git diff --cached --quiet; then
+          echo "No changes detected."
+        else
+          git commit -m "kernel: Upload/Update KernelSU source"
+          git push origin KernelSU
+        fi
+        
