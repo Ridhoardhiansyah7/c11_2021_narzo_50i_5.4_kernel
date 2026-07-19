@@ -251,8 +251,8 @@ static int get_prj_name_setup(void)
 #ifdef CONFIG_TN_V5000_CHARGER_COMPATATION
 #define DESAY_COSMX_BATTERY_4890MAH_VOLTAGE_MAX  	240    // 15k  118mv
 #define DESAY_COSMX_BATTERY_4890MAH_VOLTAGE_MIN  	20
-#define NVT_ATL_BATTERY_4890MAH_VOLTAGE_MAX  	600    //  68k  436mv
-#define NVT_ATL_BATTERY_4890MAH_VOLTAGE_MIN  	280
+#define NVT_ATL_BATTERY_4890MAH_VOLTAGE_MAX  	790    //  68k  436mv
+#define NVT_ATL_BATTERY_4890MAH_VOLTAGE_MIN  	550
 int cm_get_bat_id(struct charger_manager *cm)
 {
 	int ret, id_vol;
