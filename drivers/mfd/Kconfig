@@ -1003,6 +1003,18 @@ config MFD_SPMI_PMIC
 	  Say M here if you want to include support for the SPMI PMIC
 	  series as a module.  The module will be called "qcom-spmi-pmic".
 
+config MFD_SC2703
+	tristate "Spreadtrum Communications SC2703 PMIC"
+	depends on ARCH_SPRD || COMPILE_TEST
+	depends on I2C
+	select MFD_CORE
+	select REGMAP_I2C
+	select REGMAP_IRQ
+	help
+	  This adds support for the SC2703 PMIC. This driver provides
+	  common support for accessing the device. Additional drivers must be
+	  enabled in order to use the specific features of the device.
+
 config MFD_RDC321X
 	tristate "RDC R-321x southbridge"
 	select MFD_CORE
