@@ -333,15 +333,9 @@ static int sc2703_regulators_parse_dt(struct sc2703_buck *chip,
 	config->of_node = dev->of_node;
 	gpio_enable = devm_gpiod_get(dev, "enable", GPIOD_OUT_HIGH);
 	if (IS_ERR(gpio_enable)) {
-		config->ena_gpio = -EINVAL;
-		config->ena_gpio_initialized = false;
+		config->ena_gpiod = NULL;
 	} else {
-		config->ena_gpio = desc_to_gpio(gpio_enable);
-		config->ena_gpio_initialized = true;
-		config->ena_gpio_flags |= GPIOD_FLAGS_BIT_DIR_OUT;
-		if (config->init_data->constraints.boot_on ||
-			config->init_data->constraints.always_on)
-			config->ena_gpio_flags |= GPIOD_OUT_HIGH;
+		config->ena_gpiod = gpio_enable;
 	}
 
 	return ret;
