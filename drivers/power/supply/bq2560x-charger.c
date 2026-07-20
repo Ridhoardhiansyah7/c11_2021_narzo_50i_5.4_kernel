@@ -1180,7 +1180,7 @@ static int bq2560x_charger_usb_get_property(struct power_supply *psy,
 {
 	struct bq2560x_charger_info *info = power_supply_get_drvdata(psy);
 	u32 cur = 0, online, health, enabled = 0;
-	//enum usb_charger_type type;
+	enum usb_charger_type type;
 	int ret = 0;
 
 	if (!info) {
@@ -1250,8 +1250,8 @@ static int bq2560x_charger_usb_get_property(struct power_supply *psy,
 		break;
 
 	case POWER_SUPPLY_PROP_USB_TYPE:
-		val->intval = POWER_SUPPLY_USB_TYPE_DCP;
-		/*type = info->usb_phy->chg_type;
+		//val->intval = POWER_SUPPLY_USB_TYPE_DCP;
+		type = info->usb_phy->chg_type;
 
 		switch (type) {
 		case SDP_TYPE:
@@ -1269,7 +1269,7 @@ static int bq2560x_charger_usb_get_property(struct power_supply *psy,
 		default:
 			val->intval = POWER_SUPPLY_USB_TYPE_UNKNOWN;
 		}
-		*/
+		
 
 		break;
 
