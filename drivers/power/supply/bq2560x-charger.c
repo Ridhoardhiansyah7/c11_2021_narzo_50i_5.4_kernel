@@ -1975,30 +1975,37 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 
 	info->usb_phy = devm_usb_get_phy_by_phandle(dev, "phys", 0);
 	if (IS_ERR(info->usb_phy)) {
-		dev_err(dev, "failed to find USB phy, forcing null\n");
-		//return -EPROBE_DEFER;
-		info->usb_phy = NULL;
+		ret = PTR_ERR(info->usb_phy);
+		if (ret == -EPROBE_DEFER)
+			dev_info(dev, "USB phy not ready, deferring probe\n");
+		else
+			dev_err(dev, "failed to find USB phy: %d\n", ret);
+		return ret;
+		//info->usb_phy = NULL;
 	}
 
 	ret = bq2560x_charger_register_pd_extcon(info->dev, info);
 	if (ret) {
-		dev_err(info->dev, "failed to register pd extcon\n");
+		dev_err(info->dev, "failed to register pd extcon: %d\n", ret);
 		//return -EPROBE_DEFER;
-		ret = 0;
+		//ret = 0;
+		return ret;
 	}
 
 	ret = bq2560x_charger_register_typec_extcon(info->dev, info);
 	if (ret) {
-		dev_err(info->dev, "failed to register typec extcon\n");
+		dev_err(info->dev, "failed to register typec extcon: %d\n", ret);
 		//return -EPROBE_DEFER;
-		ret = 0;
+		//ret = 0;
+		return ret;
 	}
 
 	ret = bq2560x_charger_is_fgu_present(info);
 	if (ret) {
-		dev_err(dev, "sc27xx_fgu not ready.\n");
+		dev_err(dev, "sc27xx_fgu not ready: %d\n", ret);
 		//return -EPROBE_DEFER;
-		ret = 0;
+		//ret = 0;
+		return ret;
 	}
 
 	ret = device_property_read_bool(dev, "role-slave");
