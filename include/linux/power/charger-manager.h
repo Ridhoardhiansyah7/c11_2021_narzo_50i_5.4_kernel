@@ -19,8 +19,6 @@
 #include <linux/power/sprd_battery_info.h>
 #include <linux/power/sprd_vote.h>
 
-#define USE_SW_CONTROL_HITEMP_BAT_SETPOWEROFF
-
 enum cm_charge_info_cmd {
 	CM_CHARGE_INFO_CHARGE_LIMIT = BIT(0),
 	CM_CHARGE_INFO_INPUT_LIMIT = BIT(1),
@@ -113,7 +111,8 @@ enum cm_fast_charge_command {
 	CM_SET_PRE_CURRENT_CMD,
 	CM_SET_SAFFY_TIMER_DISABLE_CMD,
 	CM_DUMP_CHARGER_REGISTER_CMD,
-	CM_VENDOR_CHECK_CHARGER_CMD,
+	CM_HIZ_ENABLE_CMD,
+	CM_HIZ_DISABLE_CMD,
 };
 
 enum cm_present_command {
@@ -323,7 +322,16 @@ struct charger_regulator {
 	struct device_attribute attr_charge_pump_current;
 	struct device_attribute attr_enable_power_path;
 	struct device_attribute attr_notify_code;
-	struct attribute *attrs[11];
+	struct device_attribute attr_batt_param_noplug;
+	struct device_attribute attr_cool_down;
+	struct device_attribute attr_fast_charge_support;
+	struct device_attribute attr_runin_stop;
+	struct device_attribute attr_ship_mode;
+	struct device_attribute attr_batid_volt;
+	struct device_attribute attr_temp_debug;
+	struct device_attribute attr_uart_switch;
+	struct device_attribute attr_type;
+	struct attribute *attrs[20];
 
 	struct charger_manager *cm;
 };
@@ -812,11 +820,6 @@ struct charger_manager {
 	struct delayed_work ir_compensation_work;
 	struct delayed_work fixed_fchg_work;
 	struct delayed_work cp_work;
-	#ifdef USE_SW_CONTROL_HITEMP_BAT_SETPOWEROFF
-	struct delayed_work vchg_change_trace_work;
-	struct delayed_work hi_temp_bat_fastcheck_work;
-//	struct wakeup_source hi_temp_bat_fastcheck_wake_lock;
-	#endif
 	int emergency_stop;
 
 	char psy_name_buf[PSY_NAME_MAX + 1];
@@ -832,16 +835,16 @@ struct charger_manager {
 	struct sprd_vote *cm_charge_vote;
 	struct iio_channel *bat_id_cha;
 };
-#define CHG_VBUS_OV_STATUS				(1 << 1)
-#define CHG_BAT_HIG_TEMP_STATUS			(1 << 3)
-#define CHG_BAT_LOW_TEMP_STATUS			(1 << 4)
-#define CHG_BAT_ID_STATUS				(1 << 5)
-#define CHG_BAT_OV_STATUS				(1 << 6)
-#define CHG_BAT_FULL_STATUS				(1 << 7)
-#define CHG_BAT_TIMEOUT_STATUS			(1 << 9)
-#define CHG_BAT_TEMP_HIG_FULL_STATUS	(1 << 10)
-#define CHG_BAT_TEMP_LOW_FULL_STATUS	(1 << 11)
-#define CHG_BAT_TEMP_HIG_STOP_STATUS	(1 << 12)
+#define CHG_VBUS_OV_STATUS				(1 << 6)
+#define CHG_BAT_HIG_TEMP_STATUS				(1 << 5)
+#define CHG_BAT_LOW_TEMP_STATUS				(1 << 8)
+#define CHG_BAT_ID_STATUS				(1 << 7)
+#define CHG_BAT_OV_STATUS				(1 << 0)
+#define CHG_BAT_FULL_STATUS				(1 << 1)
+#define CHG_BAT_TIMEOUT_STATUS				(1 << 9)
+#define CHG_BAT_TEMP_HIG_FULL_STATUS			(1 << 10)
+#define CHG_BAT_TEMP_LOW_FULL_STATUS			(1 << 11)
+#define CHG_BAT_TEMP_HIG_STOP_STATUS			(1 << 12)
 #if IS_ENABLED(CONFIG_CHARGER_MANAGER)
 extern void cm_notify_event(struct power_supply *psy,
 				enum cm_event_types type, char *msg);
