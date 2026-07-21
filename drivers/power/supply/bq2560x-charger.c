@@ -2137,6 +2137,7 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 		if (info->client->irq < 0) {
 			dev_err(dev, "failed to get irq no\n");
 			gpio_free(info->irq_gpio);
+			info->irq_gpio = -EINVAL;
 		} else {
 			ret = devm_request_threaded_irq(&info->client->dev, info->client->irq,
 							NULL, bq2560x_int_handler,
@@ -2150,6 +2151,7 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 		}
 	} else {
 		dev_err(dev, "failed to get irq gpio\n");
+		info->irq_gpio = -EINVAL;
 	}
 
 	mutex_unlock(&info->lock);
@@ -2164,7 +2166,9 @@ error_sysfs:
 		usb_unregister_notifier(info->usb_phy, &info->usb_notify);
 	}
 err_psy_usb:
-	if (info->irq_gpio)
+	//if (info->irq_gpio)
+	//	gpio_free(info->irq_gpio);
+	if (gpio_is_valid(info->irq_gpio))
 		gpio_free(info->irq_gpio);
 err_regmap_exit:
 	mutex_unlock(&info->lock);
