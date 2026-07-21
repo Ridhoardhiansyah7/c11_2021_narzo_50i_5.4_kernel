@@ -153,7 +153,7 @@
 
 #define ETA6937_WAKE_UP_MS              2000
 
-extern int sc27xx_fgu_bat_id;
+extern int get_now_battery_id(void);
 
 static int eta6937_max_chg_cur[] = {
 	550000,
@@ -340,12 +340,9 @@ static int eta6937_charger_hw_init(struct eta6937_charger_info *info)
 	struct sprd_battery_info bat_info = {};
 	int voltage_max_microvolt, termination_cur;
 	int ret;
-	int num = 0;
 
-	if (sc27xx_fgu_bat_id == 2)
-		num = 1;
-
-	ret = sprd_battery_get_battery_info(info->psy_usb, &bat_info, num);
+	bat_info.bat_id = get_now_battery_id();
+	ret = sprd_battery_get_battery_info(info->psy_usb, &bat_info, bat_info.bat_id);
 	if (ret) {
 		dev_warn(info->dev, "no battery information is supplied\n");
 
