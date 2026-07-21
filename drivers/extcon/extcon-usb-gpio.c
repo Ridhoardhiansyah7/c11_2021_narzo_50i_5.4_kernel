@@ -197,8 +197,8 @@ static int boot_mode_check(void)
 	if (strstr(cmd_line, "androidboot.mode=charger"))
 		return 0;
 
-	if (strstr(cmd_line, "androidboot.mode=recovery"))
-		return 0;
+	//if (strstr(cmd_line, "androidboot.mode=recovery"))
+	//	return 0;
 	
 	pr_info("[boot_mode] cmd_line is: %s\n", cmd_line);
 	
