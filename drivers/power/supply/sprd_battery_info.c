@@ -68,10 +68,6 @@ static int sprd_battery_parse_cmdline_match(struct power_supply *psy,
 	return 0;
 }
 
-#define DESAY_COSMX_BATTERY_4890MAH_VOLTAGE_MAX  	200
-#define DESAY_COSMX_BATTERY_4890MAH_VOLTAGE_MIN  	20
-#define NVT_ATL_BATTERY_4890MAH_VOLTAGE_MAX  	500
-#define NVT_ATL_BATTERY_4890MAH_VOLTAGE_MIN  	300
 int sprd_battery_parse_battery_id(struct power_supply *psy)
 {
 	char *str = "bat.id=";
@@ -87,27 +83,12 @@ int sprd_battery_parse_battery_id(struct power_supply *psy)
 				ret, result);
 		}
 	}
-	dev_info(&psy->dev, "Batteryid vol= %d\n", id);
-
-	if (1) {
-		int id_vol;
-
-		id_vol = id;
-	    if ((id_vol >= DESAY_COSMX_BATTERY_4890MAH_VOLTAGE_MIN)&&(id_vol <= DESAY_COSMX_BATTERY_4890MAH_VOLTAGE_MAX)) {
-	    	id = 1;
-	    } else if((id_vol >= NVT_ATL_BATTERY_4890MAH_VOLTAGE_MIN)&&(id_vol <= NVT_ATL_BATTERY_4890MAH_VOLTAGE_MAX)){
-	    	id = 2;
-	    }else{
-	    	id = 3;
-	    }
-	}
 	dev_info(&psy->dev, "Batteryid = %d\n", id);
 
 	return id;
 }
 EXPORT_SYMBOL_GPL(sprd_battery_parse_battery_id);
 
-#ifdef CONFIG_TN_V5000_CHARGER_COMPATATION
 static int charger_id = 0xFF;
 static int sprd_charger_parse_cmdline_match(char *match_str, char *result, int size)
 {
@@ -180,7 +161,6 @@ int sprd_charger_parse_charger_id(void)
 	return charger_id;
 }
 EXPORT_SYMBOL_GPL(sprd_charger_parse_charger_id);
-#endif
 
 static bool sprd_battery_ocv_cap_table_check(struct power_supply *psy,
 					     struct sprd_battery_ocv_table *table,
@@ -767,19 +747,6 @@ int sprd_battery_get_battery_info(struct power_supply *psy, struct sprd_battery_
 	const char *value;
 	int err, index, num = 0;
 
-	
-	// input battery_id : 0 , 1, 0xFF
-	dev_info(&psy->dev, "sprd_battery_get_battery_info battery_id= %d\n", battery_id);
-	if (battery_id == 0xFF){
-		int id;
-		id = sprd_battery_parse_battery_id(psy);
-		battery_id = 0;
-		if (id == 2)battery_id = 1;
-	}
-	num = battery_id;	
-
-    dev_info(&psy->dev, "sprd_battery_get_battery_info: num-%d\n", num);
-
 	info->charge_full_design_uah         = -EINVAL;
 	info->voltage_min_design_uv          = -EINVAL;
 	info->precharge_current_ua           = -EINVAL;
@@ -834,10 +801,10 @@ int sprd_battery_get_battery_info(struct power_supply *psy, struct sprd_battery_
 		return -ENXIO;
 	}
 
-	#ifdef CONFIG_TN_V5000_CHARGER_COMPATATION
-	sprd_charger_parse_charger_id();
-	#endif
 	//battery_id = sprd_battery_parse_battery_id(psy);
+
+	if (battery_id == 2)
+		num = 1;
 
 	battery_np = of_parse_phandle(psy->of_node, "monitored-battery", num);
 	if (!battery_np) {
@@ -985,7 +952,6 @@ int sprd_battery_get_battery_info(struct power_supply *psy, struct sprd_battery_
 		return err;
 	}
 
-dev_info(&psy->dev, "sprd_battery_get_battery_info: ok get info->charge_full_design_uah-%d\n", info->charge_full_design_uah);
 	return 0;
 }
 EXPORT_SYMBOL_GPL(sprd_battery_get_battery_info);
