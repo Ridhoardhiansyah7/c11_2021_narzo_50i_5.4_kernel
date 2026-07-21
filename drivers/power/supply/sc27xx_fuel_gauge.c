@@ -4318,7 +4318,7 @@ static int sc27xx_fgu_hw_init(struct sc27xx_fgu_data *data,
 
 	data->cur_now_buff[SC27XX_FGU_CURRENT_BUFF_CNT - 1] = SC27XX_FGU_MAGIC_NUMBER;
 
-	if (sc27xx_fgu_bat_id == 2)
+	if (sc27xx_fgu_bat_id == 2 || sc27xx_fgu_bat_id == 3)
 		num = 1;
 	ret = sprd_battery_get_battery_info(data->battery, &info, num);
 	if (ret) {
@@ -4528,6 +4528,14 @@ static int sc27xx_fgu_probe(struct platform_device *pdev)
 	ret = device_property_read_u32(dev, "sprd,calib-resistance-micro-ohms",
 				       &data->calib_resist);
 	if (ret) {
+		ret = device_property_read_u32(dev, "sprd,calib-resistance-real", &data->calib_resist);
+		if (ret) {
+			dev_warn(dev, "Properties not found, forcing default 10000\n");
+			data->calib_resist = 10000; // this value from sprd,calib-resistance-real c11 2021 dtbo node
+			ret = 0;
+		} else {
+			dev_info(dev, "Loaded calib-resistance-real: %u\n", data->calib_resist);
+		}
 		dev_err(dev, "failed to get fgu calibration resistance\n");
 		return ret;
 	}
