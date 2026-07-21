@@ -177,12 +177,16 @@ static int boot_mode_check(void)
 	int ret = 0;
 
 	np = of_find_node_by_path("/chosen");
-	if (!np)
+	if (!np) {
+		pr_err("[boot_mode] Error: /chosen node not found!\n");
 		return 0;
+	}
 
 	ret = of_property_read_string(np, "bootargs", &cmd_line);
-	if (ret < 0)
+	if (ret < 0) {
+		pr_err("[boot_mode] Error: bootargs not found!\n");
 		return 0;
+	}
 
 	if (strstr(cmd_line, "androidboot.mode=cali"))
 		return 0;
@@ -194,11 +198,17 @@ static int boot_mode_check(void)
 		return 0;
 
 	if (strstr(cmd_line, "androidboot.mode=recovery"))
-			return 0;
-
+		return 0;
+	
+	pr_info("[boot_mode] cmd_line is: %s\n", cmd_line);
+	
 	//printk("lj: cmd_line:%s\n", cmd_line);
-	if (strstr(cmd_line, "lcd_name=lcd_ft8006s_milan_hdplus_boe"))
+	if (strstr(cmd_line, "lcd_name=lcd_ft8006s_boe_mipi_hd") || 
+		strstr(cmd_line, "lcd_name=lcd_ft8006s_milan_hdplus_boe")) {
 		ret = 1;
+	} else {
+		pr_info("[boot_mode] LCD Name NOT Match!\n");
+	}
 
 	return ret;
 }
