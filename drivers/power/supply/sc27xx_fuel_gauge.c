@@ -421,7 +421,7 @@ static const struct sc27xx_fgu_variant_data sc2720_info = {
 };
 
 static bool is_charger_mode;
-extern int sc27xx_fgu_bat_id;
+//extern int sc27xx_fgu_bat_id;
 struct sc27xx_fgu_data *g_fgu_data;
 int batid_volt = 0;
 
