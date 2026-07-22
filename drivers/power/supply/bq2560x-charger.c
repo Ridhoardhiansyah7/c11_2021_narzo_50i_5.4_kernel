@@ -2133,6 +2133,15 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 	}
 
 	info->irq_gpio = of_get_named_gpio(info->dev->of_node, "irq-gpio", 0);
+	if (!gpio_is_valid(info->irq_gpio)) {
+		info->irq_gpio = of_get_named_gpio(info->dev->of_node, "bq2560x,irq-gpio", 0);
+	}
+
+	if (!gpio_is_valid(info->irq_gpio)) {
+		info->irq_gpio = 176;
+		dev_warn(dev, "[HACK] DTS irq-gpio fail, forcing PMIC VBUS GPIO 176\n");
+	}
+	
 	if (gpio_is_valid(info->irq_gpio)) {
 		ret = devm_gpio_request_one(info->dev, info->irq_gpio,
 					    GPIOF_DIR_IN, "bq2560x_int");
