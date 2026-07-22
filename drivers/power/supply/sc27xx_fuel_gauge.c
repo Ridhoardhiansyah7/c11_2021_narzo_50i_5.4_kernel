@@ -4582,10 +4582,10 @@ static int sc27xx_fgu_probe(struct platform_device *pdev)
 	data->bat_id_cha= devm_iio_channel_get(&pdev->dev, "bat-id-vol");
 		if (IS_ERR(data->bat_id_cha)) {
 			dev_warn(&pdev->dev, "bat-id-vol not found, trying fallback batt_id-channel...\n");
-			cm->bat_id_cha= devm_iio_channel_get(&pdev->dev, "batt_id-channel"); // this value is from rc11 dtbo entry
-			if (IS_ERR(cm->bat_id_cha)) { 
+			data->bat_id_cha= devm_iio_channel_get(&pdev->dev, "batt_id-channel"); // this value is from rc11 dtbo entry
+			if (IS_ERR(data->bat_id_cha)) { 
 				dev_warn(&pdev->dev, "batt_id-channel also not found. features disabled.\n");
-				cm->bat_id_cha = NULL;
+				data->bat_id_cha = NULL;
 			} else {
 				dev_info(&pdev->dev, "Ok to get batt_id-channel via fallback\n");
 			}
