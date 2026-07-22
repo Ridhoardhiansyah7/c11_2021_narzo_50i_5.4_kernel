@@ -212,8 +212,9 @@ static bool error_full_status = false;
 #define GUANYU_BATTERY_VOLTAGE_MAX_5000    510
 #define GUANYU_BATTERY_VOLTAGE_MIN_5000    310
 static int batid_volt = 0;
-int sc27xx_fgu_bat_id = 0;
-EXPORT_SYMBOL_GPL(sc27xx_fgu_bat_id);
+//int sc27xx_fgu_bat_id = 0;
+//EXPORT_SYMBOL_GPL(sc27xx_fgu_bat_id);
+extern int sc27xx_fgu_bat_id;
 static char cm_prj_name[10] = "unknow";
 bool bbat_mode = false;
 
