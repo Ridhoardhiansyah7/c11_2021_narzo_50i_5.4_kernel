@@ -20,7 +20,7 @@
 #include <linux/slab.h>
 #include <linux/usb/phy.h>
 #include <linux/rtc.h>
-#include <linux/hardware_info_wt.h>
+//#include <linux/hardware_info_wt.h>
 
 /* PMIC global control registers definition */
 #define SC27XX_MODULE_EN0		0xc08
@@ -478,14 +478,14 @@ int sc27xx_fgu_get_bat_id_vol(struct sc27xx_fgu_data *data)
 	batid_volt = id_vol;
 
 	if ((id_vol >= ATL_BATTERY_VOLTAGE_MIN_5000)&&(id_vol <= ATL_BATTERY_VOLTAGE_MAX_5000)) {
-		hardwareinfo_set_prop(HARDWARE_BATTERY_ID, "realme-atl-4V45-5000mAh");
+		//hardwareinfo_set_prop(HARDWARE_BATTERY_ID, "realme-atl-4V45-5000mAh");
 		sc27xx_fgu_bat_id = 1;
 	} else if((id_vol >= GUANYU_BATTERY_VOLTAGE_MIN_5000)&&(id_vol <= GUANYU_BATTERY_VOLTAGE_MAX_5000)){
-		hardwareinfo_set_prop(HARDWARE_BATTERY_ID, "realme-lwn-4V45-5000mAh");
+		//hardwareinfo_set_prop(HARDWARE_BATTERY_ID, "realme-lwn-4V45-5000mAh");
 		sc27xx_fgu_bat_id = 0;
 	}else{
 		sc27xx_fgu_bat_id = 2;
-		 hardwareinfo_set_prop(HARDWARE_BATTERY_ID,"OTHERS");
+		 //hardwareinfo_set_prop(HARDWARE_BATTERY_ID,"OTHERS");
 	}
 
 	return 0;
