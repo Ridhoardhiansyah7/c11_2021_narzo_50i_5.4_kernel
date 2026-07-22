@@ -4536,8 +4536,6 @@ static int sc27xx_fgu_probe(struct platform_device *pdev)
 		} else {
 			dev_info(dev, "Loaded calib-resistance-real: %u\n", data->calib_resist);
 		}
-		dev_err(dev, "failed to get fgu calibration resistance\n");
-		return ret;
 	}
 
 	ret = device_property_read_u32(dev,
