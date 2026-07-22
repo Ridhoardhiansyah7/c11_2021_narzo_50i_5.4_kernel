@@ -2145,25 +2145,26 @@ static int bq2560x_charger_probe(struct i2c_client *client,
 	if (gpio_is_valid(info->irq_gpio)) {
 		ret = devm_gpio_request_one(info->dev, info->irq_gpio,
 					    GPIOF_DIR_IN, "bq2560x_int");
-		if (!ret)
-			info->client->irq = gpio_to_irq(info->irq_gpio);
-		else
+
+		if (ret && ret != -EBUSY)
 			dev_err(dev, "int request failed, ret = %d\n", ret);
 
-		if (info->client->irq < 0) {
-			dev_err(dev, "failed to get irq no\n");
-			gpio_free(info->irq_gpio);
+		info->client->irq = gpio_to_irq(info->irq_gpio);
+		if (info->client->irq <= 0) {
+			dev_err(dev, "failed to get irq no (gpio_to_irq failed)\n");
 			info->irq_gpio = -EINVAL;
 		} else {
 			ret = devm_request_threaded_irq(&info->client->dev, info->client->irq,
 							NULL, bq2560x_int_handler,
-							IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+							IRQF_TRIGGER_FALLING | IRQF_ONESHOT | IRQF_SHARED,
 							"bq2560x interrupt", info);
-			if (ret)
-				dev_err(info->dev, "Failed irq = %d ret = %d\n",
-					info->client->irq, ret);
-			else
+			if (ret) {
+				dev_err(info->dev, "Failed irq = %d ret = %d\n", info->client->irq, ret);
+			} else {
+				dev_info(info->dev, "[HACK] Success registered IRQ %d for GPIO %d\n", 
+					 info->client->irq, info->irq_gpio);
 				enable_irq_wake(client->irq);
+			}
 		}
 	} else {
 		dev_err(dev, "failed to get irq gpio\n");
