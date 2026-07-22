@@ -7602,7 +7602,7 @@ static int charger_manager_probe(struct platform_device *pdev)
 			dev_warn(&pdev->dev, "batt_id-channel also not found. features disabled.\n");
 			cm->bat_id_cha = NULL;
 		} else {
-			dev_info(&pdev->dev, "Ok to get batt_id-channel via fallback\n")
+			dev_info(&pdev->dev, "Ok to get batt_id-channel via fallback\n");
 		}
 	} else {
 		dev_info(&pdev->dev, "ok to get bat-id-vol IIO channel\n");
