@@ -7596,8 +7596,16 @@ static int charger_manager_probe(struct platform_device *pdev)
 
 	cm->bat_id_cha= devm_iio_channel_get(&pdev->dev, "bat-id-vol");
 	if (IS_ERR(cm->bat_id_cha)) {
-		dev_err(&pdev->dev, "failed to get bat-id-vol IIO channel\n");
-		return PTR_ERR(cm->bat_id_cha);
+		dev_warn(&pdev->dev, "bat-id-vol not found, trying fallback batt_id-channel...\n");
+		cm->bat_id_cha= devm_iio_channel_get(&pdev->dev, "batt_id-channel"); // rc11 2021 dtbo entry name
+		if (IS_ERR(cm->bat_id_cha)) {
+			dev_warn(&pdev->dev, "batt_id-channel also not found. features disabled.\n");
+			cm->bat_id_cha = NULL;
+		} else {
+			dev_info(&pdev->dev, "Ok to get batt_id-channel via fallback\n")
+		}
+	} else {
+		dev_info(&pdev->dev, "ok to get bat-id-vol IIO channel\n");
 	}
 	
 	cm_get_bat_id(cm);
